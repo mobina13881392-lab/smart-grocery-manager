@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
   <!-- سایدبار -->
   <aside class="sidebar">
     <div class="logo">🛒 مدیریت فروشگاه</div>
@@ -472,5 +472,12 @@
   <script src="js/analysis.js"></script>
   <script src="js/setting.js"></script>
   <script src="js/dashboard.js"></script>
+  <script>
+  function toggleMenu() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.querySelector('.sidebar-overlay').classList.toggle('open');
+  }
+</script>
+<div class="sidebar-overlay" onclick="toggleMenu()"></div>
 </body>
 </html>
