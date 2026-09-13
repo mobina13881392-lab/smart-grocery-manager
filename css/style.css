@@ -468,3 +468,34 @@ body {
     padding: 20px;
   }
 }
+/* ===== بهتر کردن جدول‌ها روی موبایل ===== */
+@media (max-width: 600px) {
+  .panel {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table {
+    min-width: 600px;
+  }
+  
+  .table th,
+  .table td {
+    white-space: nowrap;
+  }
+  
+  /* اسکرول‌بار نازک */
+  .panel::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .panel::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+}
+@media (max-width: 600px) {
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}

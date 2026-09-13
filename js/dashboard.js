@@ -1,6 +1,7 @@
 // ===== جابجایی بین بخش‌ها =====
 
 function showProducts() {
+    document.getElementById('pageTitle').textContent = 'محصولات';
   document.getElementById('productsPanel').style.display = 'block';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';
@@ -11,6 +12,7 @@ function showProducts() {
 }
 
 function showSales() {
+   document.getElementById('pageTitle').textContent = 'فروش‌ها';
   document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'block';
   document.getElementById('purchasesPanel').style.display = 'none';
@@ -22,6 +24,7 @@ function showSales() {
 }
 
 function showPurchases() {
+   document.getElementById('pageTitle').textContent = 'خریدها';
   document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'block';

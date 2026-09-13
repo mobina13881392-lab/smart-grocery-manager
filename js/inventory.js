@@ -2,6 +2,7 @@
 let currentInventoryFilter = 'all';
 
 function showInventory() {
+  document.getElementById('pageTitle').textContent = 'انبار';
   document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';

@@ -12,6 +12,7 @@ function saveSettings(settings) {
 }
 
 function showSettings() {
+   document.getElementById('pageTitle').textContent = 'تنظیمات';
   document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';

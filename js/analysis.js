@@ -1,5 +1,6 @@
 // ===== تحلیل هوشمند =====
 function showAnalysis() {
+    document.getElementById('pageTitle').textContent = 'تحلیل هوشمند';
   document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';
