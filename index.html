@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مدیریت هوشمند خواربارفروشی</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- سایدبار -->
+  <aside class="sidebar">
+    <div class="logo">🛒 مدیریت فروشگاه</div>
+    <nav>
+      <a href="#" class="active">داشبورد</a>
+      <a href="#">محصولات</a>
+      <a href="#" onclick="showSales(); return false;">فروش‌ها</a>
+      <a href="#" onclick="showPurchases(); return false;">خریدها</a>
+      <a href="#" onclick="showInventory(); return false;">انبار</a>
+     <a href="#" onclick="showReports(); return false;">گزارش‌ها</a>
+      <a href="#" onclick="showAnalysis(); return false;">تحلیل هوشمند</a>
+      <a href="#">تنظیمات</a>
+    </nav>
+  </aside>
+
+  <!-- محتوای اصلی -->
+  <main class="main">
+    <header class="header">
+      <h1>داشبورد</h1>
+      <span class="date" id="todayDate"></span>
+    </header>
+
+    <!-- کارت‌های آمار -->
+    <section class="cards">
+      <div class="card">
+        <div class="card-title">تعداد محصولات</div>
+        <div class="card-value" id="totalProducts">۰</div>
+      </div>
+      <div class="card">
+        <div class="card-title">ارزش موجودی</div>
+        <div class="card-value" id="totalValue">۰ تومان</div>
+      </div>
+      <div class="card">
+        <div class="card-title">کالاهای کم‌موجود</div>
+        <div class="card-value warning" id="lowStock">۰</div>
+      </div>
+      <div class="card">
+        <div class="card-title">فروش امروز</div>
+        <div class="card-value" id="todaySales">۰ تومان</div>
+      </div>
+      <div class="card">
+        <div class="card-title">سود امروز</div>
+        <div class="card-value" id="todayProfit">۰ تومان</div>
+      </div>
+    </section>
+<!-- بخش فروش‌ها -->
+<section class="panel" id="salesPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>فروش‌ها</h2>
+    <button class="btn-primary" onclick="openSaleForm()">+ ثبت فروش</button>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>محصول</th>
+        <th>تعداد</th>
+        <th>قیمت فروش</th>
+        <th>مبلغ کل</th>
+        <th>سود</th>
+        <th>تاریخ</th>
+        <th>عملیات</th>
+      </tr>
+    </thead>
+    <tbody id="salesTable">
+      <tr><td colspan="7" class="empty">هنوز فروشی ثبت نشده</td></tr>
+    </tbody>
+  </table>
+</section>
+<!-- بخش خریدها -->
+<section class="panel" id="purchasesPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>خریدها</h2>
+    <button class="btn-primary" onclick="openPurchaseForm()">+ ثبت خرید</button>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>محصول</th>
+        <th>تعداد</th>
+        <th>قیمت خرید</th>
+        <th>مبلغ کل</th>
+        <th>تأمین‌کننده</th>
+        <th>تاریخ</th>
+        <th>عملیات</th>
+      </tr>
+    </thead>
+    <tbody id="purchasesTable">
+      <tr><td colspan="7" class="empty">هنوز خریدی ثبت نشده</td></tr>
+    </tbody>
+  </table>
+</section>
+<!-- بخش انبار -->
+<section class="panel" id="inventoryPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>انبار</h2>
+  </div>
+
+  <div class="inv-filters">
+    <div class="inv-filter active" onclick="filterInventory('all'); setActiveFilter(this)">
+      همه (<span id="invCount_all">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('ok'); setActiveFilter(this)">
+      عادی (<span id="invCount_ok">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('near'); setActiveFilter(this)">
+      رو به اتمام (<span id="invCount_near">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('low'); setActiveFilter(this)">
+      کم (<span id="invCount_low">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('out'); setActiveFilter(this)">
+      ناموجود (<span id="invCount_out">۰</span>)
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>محصول</th>
+        <th>دسته</th>
+        <th>موجودی</th>
+        <th>حداقل</th>
+        <th>ارزش</th>
+        <th>وضعیت</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryTable">
+      <tr><td colspan="6" class="empty">هنوز محصولی نیست</td></tr>
+    </tbody>
+  </table>
+</section>
+<!-- بخش گزارش‌ها -->
+<section class="panel" id="reportsPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>گزارش‌ها</h2>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">فروش و سود امروز</h3>
+  <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش امروز</div><div class="card-value" id="repTodaySales">۰</div></div>
+    <div class="card"><div class="card-title">سود امروز</div><div class="card-value" id="repTodayProfit">۰</div></div>
+    <div class="card"><div class="card-title">تعداد فاکتور</div><div class="card-value" id="repTodayCount">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">این هفته</h3>
+  <div class="cards" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش هفته</div><div class="card-value" id="repWeekSales">۰</div></div>
+    <div class="card"><div class="card-title">سود هفته</div><div class="card-value" id="repWeekProfit">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">این ماه</h3>
+  <div class="cards" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش ماه</div><div class="card-value" id="repMonthSales">۰</div></div>
+    <div class="card"><div class="card-title">سود ماه</div><div class="card-value" id="repMonthProfit">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">مجموع کل</h3>
+  <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">کل فروش</div><div class="card-value" id="repTotalSales">۰</div></div>
+    <div class="card"><div class="card-title">کل سود</div><div class="card-value" id="repTotalProfit">۰</div></div>
+    <div class="card"><div class="card-title">کل خرید</div><div class="card-value" id="repTotalPurchases">۰</div></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <h3 style="margin-bottom: 10px;">۵ محصول پرفروش</h3>
+      <table class="table">
+        <thead><tr><th>#</th><th>محصول</th><th>تعداد فروش</th></tr></thead>
+        <tbody id="repTopQty"><tr><td colspan="3" class="empty">داده‌ای نیست</td></tr></tbody>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 10px;">۵ محصول پرسود</h3>
+      <table class="table">
+        <thead><tr><th>#</th><th>محصول</th><th>سود</th></tr></thead>
+        <tbody id="repTopProfit"><tr><td colspan="3" class="empty">داده‌ای نیست</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+    <!-- جدول محصولات -->
+    <section class="panel" id="prductsPanel">
+      <div class="panel-header">
+        <h2>محصولات</h2>
+        <button class="btn-primary" onclick="openProductForm()">+ افزودن محصول</button>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>نام</th>
+            <th>دسته</th>
+            <th>موجودی</th>
+            <th>قیمت خرید</th>
+            <th>قیمت فروش</th>
+            <th>وضعیت</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody id="productsTable">
+          <tr><td colspan="7" class="empty">هنوز محصولی اضافه نشده</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <!-- بخش انبار -->
+<section class="panel" id="inventoryPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>انبار</h2>
+  </div>
+
+  <div class="inv-filters">
+    <div class="inv-filter active" onclick="filterInventory('all'); setActiveFilter(this)">
+      همه (<span id="invCount_all">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('ok'); setActiveFilter(this)">
+      عادی (<span id="invCount_ok">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('near'); setActiveFilter(this)">
+      رو به اتمام (<span id="invCount_near">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('low'); setActiveFilter(this)">
+      کم (<span id="invCount_low">۰</span>)
+    </div>
+    <div class="inv-filter" onclick="filterInventory('out'); setActiveFilter(this)">
+      ناموجود (<span id="invCount_out">۰</span>)
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>محصول</th>
+        <th>دسته</th>
+        <th>موجودی</th>
+        <th>حداقل</th>
+        <th>ارزش</th>
+        <th>وضعیت</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryTable">
+      <tr><td colspan="6" class="empty">هنوز محصولی نیست</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- بخش گزارش‌ها -->
+<section class="panel" id="reportsPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>گزارش‌ها</h2>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">فروش و سود امروز</h3>
+  <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش امروز</div><div class="card-value" id="repTodaySales">۰</div></div>
+    <div class="card"><div class="card-title">سود امروز</div><div class="card-value" id="repTodayProfit">۰</div></div>
+    <div class="card"><div class="card-title">تعداد فاکتور</div><div class="card-value" id="repTodayCount">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">این هفته</h3>
+  <div class="cards" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش هفته</div><div class="card-value" id="repWeekSales">۰</div></div>
+    <div class="card"><div class="card-title">سود هفته</div><div class="card-value" id="repWeekProfit">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">این ماه</h3>
+  <div class="cards" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">فروش ماه</div><div class="card-value" id="repMonthSales">۰</div></div>
+    <div class="card"><div class="card-title">سود ماه</div><div class="card-value" id="repMonthProfit">۰</div></div>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">مجموع کل</h3>
+  <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+    <div class="card"><div class="card-title">کل فروش</div><div class="card-value" id="repTotalSales">۰</div></div>
+    <div class="card"><div class="card-title">کل سود</div><div class="card-value" id="repTotalProfit">۰</div></div>
+    <div class="card"><div class="card-title">کل خرید</div><div class="card-value" id="repTotalPurchases">۰</div></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <h3 style="margin-bottom: 10px;">۵ محصول پرفروش</h3>
+      <table class="table">
+        <thead><tr><th>#</th><th>محصول</th><th>تعداد فروش</th></tr></thead>
+        <tbody id="repTopQty"><tr><td colspan="3" class="empty">داده‌ای نیست</td></tr></tbody>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 10px;">۵ محصول پرسود</h3>
+      <table class="table">
+        <thead><tr><th>#</th><th>محصول</th><th>سود</th></tr></thead>
+        <tbody id="repTopProfit"><tr><td colspan="3" class="empty">داده‌ای نیست</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<!-- بخش تحلیل هوشمند -->
+<section class="panel" id="analysisPanel" style="display:none;">
+  <div class="panel-header">
+    <h2>🧠 تحلیل هوشمند</h2>
+  </div>
+
+  <h3 style="margin: 15px 0 10px;">هشدارها و پیشنهادها</h3>
+  <div id="analysisAlerts"></div>
+
+  <h3 style="margin: 25px 0 10px;">
+    💰 سرمایه خوابیده در انبار
+    <span style="font-size: 13px; color: #64748b; font-weight: normal;">
+      — مجموع: <span id="analysisCapitalTotal">۰ تومان</span>
+    </span>
+  </h3>
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>محصول</th><th>موجودی</th><th>سرمایه درگیر</th></tr>
+    </thead>
+    <tbody id="analysisCapital">
+      <tr><td colspan="4" class="empty">محصولی نیست</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin: 25px 0 10px;">📅 پیش‌بینی اتمام موجودی</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>محصول</th>
+        <th>موجودی</th>
+        <th>میانگین فروش روزانه</th>
+        <th>تخمین اتمام</th>
+        <th>پیشنهاد خرید</th>
+      </tr>
+    </thead>
+    <tbody id="analysisForecast">
+      <tr><td colspan="5" class="empty">داده‌ای نیست</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin: 25px 0 10px;">🐢 محصولات کم‌فروش (۳۰ روز اخیر)</h3>
+  <table class="table">
+    <thead>
+      <tr><th>محصول</th><th>موجودی</th><th>فروش رفته</th><th>سرمایه خوابیده</th></tr>
+    </thead>
+    <tbody id="analysisSlow">
+      <tr><td colspan="4" class="empty">داده‌ای نیست</td></tr>
+    </tbody>
+  </table>
+</section>
+  </main>
+
+  <!-- مودال فرم محصول -->
+  <div class="modal" id="productModal">
+    <div class="modal-box">
+      <h3 id="modalTitle">افزودن محصول</h3>
+
+      <input type="hidden" id="productId">
+
+      <label>نام محصول</label>
+      <input type="text" id="pName" placeholder="مثلاً روغن">
+
+      <label>دسته‌بندی</label>
+      <input type="text" id="pCategory" placeholder="مثلاً خوراکی">
+
+      <label>قیمت خرید (تومان)</label>
+      <input type="number" id="pBuy" placeholder="0">
+
+      <label>قیمت فروش (تومان)</label>
+      <input type="number" id="pSell" placeholder="0">
+
+      <label>موجودی</label>
+      <input type="number" id="pStock" placeholder="0">
+
+      <label>حداقل موجودی مجاز</label>
+      <input type="number" id="pMin" placeholder="5" value="5">
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeProductForm()">انصراف</button>
+        <button class="btn-primary" onclick="saveProduct()">ذخیره</button>
+      </div>
+    </div>
+  </div>
+<!-- مودال فروش -->
+<div class="modal" id="sModal">
+  <div class="modal-box">
+    <h3>ثبت فروش جدید</h3>
+
+    <label>محصول</label>
+    <select id="sProduct" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+    </select>
+
+    <label>تعداد</label>
+    <input type="number" id="sQty" placeholder="0">
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeSaleForm()">انصراف</button>
+      <button class="btn-primary" onclick="saveSale()">ثبت فروش</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="purModal">
+  <div class="modal-box">
+    <h3>ثبت خرید جدید</h3>
+
+    <label>محصول</label>
+    <select id="purProduct" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;"></select>
+
+    <label>تعداد</label>
+    <input type="number" id="purQty" placeholder="0">
+
+    <label>قیمت خرید (تومان)</label>
+    <input type="number" id="purPrice" placeholder="0">
+
+    <label>تأمین‌کننده</label>
+    <input type="text" id="purSupplier" placeholder="مثلاً پخش مرکزی">
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePurchaseForm()">انصراف</button>
+      <button class="btn-primary" onclick="savePurchase()">ثبت خرید</button>
+    </div>
+  </div>
+</div>
+  <script src="js/storage.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/sales.js"></script>
+  <script src="js/purchases.js"></script>
+  <script src="js/inventory.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/analysis.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
