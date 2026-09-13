@@ -24,8 +24,10 @@ function showSettings() {
 
 function renderSettings() {
   const s = getSettings();
-  document.getElementById('setShopName').value = s.shopName;
-  document.getElementById('setCurrency').value = s.currency;
+  const nameEl = document.getElementById('setShopName');
+  const curEl = document.getElementById('setCurrency');
+  if (nameEl) nameEl.value = s.shopName;
+  if (curEl) curEl.value = s.currency;
   updateShopName();
 }
 

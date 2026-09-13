@@ -1,14 +1,14 @@
 // ===== تحلیل هوشمند =====
 function showAnalysis() {
-  document.querySelector('.panel').style.display = 'none';
+  document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';
   document.getElementById('inventoryPanel').style.display = 'none';
   document.getElementById('reportsPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
   document.getElementById('analysisPanel').style.display = 'block';
   renderAnalysis();
 }
-
 function renderAnalysis() {
   const products = getProducts();
   const sales = getSales();

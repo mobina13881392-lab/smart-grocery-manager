@@ -1,10 +1,11 @@
 // ===== مدیریت گزارش‌ها =====
 function showReports() {
-  document.querySelector('.panel').style.display = 'none';
+  document.getElementById('productsPanel').style.display = 'none';
   document.getElementById('salesPanel').style.display = 'none';
   document.getElementById('purchasesPanel').style.display = 'none';
   document.getElementById('inventoryPanel').style.display = 'none';
-  document.getElementById('analysisPanel').style.display ='none';
+  document.getElementById('analysisPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
   document.getElementById('reportsPanel').style.display = 'block';
   renderReports();
 }
