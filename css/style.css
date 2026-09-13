@@ -499,3 +499,53 @@ body {
     transform: translateX(0);
   }
 }
+/* ===== رفع مشکل جدول‌ها روی موبایل ===== */
+@media (max-width: 600px) {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  
+  .main {
+    overflow-x: hidden;
+  }
+  
+  .panel {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .panel::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .panel::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  
+  .table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    white-space: nowrap;
+  }
+  
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .header {
+    padding-top: 10px;
+  }
+  
+  .header h1 {
+    font-size: 18px;
+  }
+}
