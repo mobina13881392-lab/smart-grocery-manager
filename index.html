@@ -429,11 +429,12 @@
     <h3>ثبت فروش جدید</h3>
 
     <label>محصول</label>
-    <select id="sProduct" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+    <select id="sProduct" onchange="updateSalePreview()" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
     </select>
 
     <label>تعداد</label>
-    <input type="number" id="sQty" placeholder="0">
+    <input type="number" id="sQty" placeholder="0" oninput="updateSalePreview()">
+    <div id="sPreview"></div>
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeSaleForm()">انصراف</button>
@@ -454,6 +455,9 @@
     <label>قیمت خرید (تومان)</label>
     <input type="number" id="purPrice" placeholder="0">
 
+    <label>قیمت فروش این خرید (تومان)</label>
+    <input type="number" id="purSell" placeholder="خالی = قیمت فروش فعلی محصول">
+
     <label>تأمین‌کننده</label>
     <input type="text" id="purSupplier" placeholder="مثلاً پخش مرکزی">
 
@@ -464,6 +468,7 @@
   </div>
 </div>
   <script src="js/storage.js"></script>
+  <script src="js/costing.js"></script>
   <script src="js/products.js"></script>
   <script src="js/sales.js"></script>
   <script src="js/purchases.js"></script>
